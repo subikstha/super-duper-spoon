@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import { createOpenAI } from '@ai-sdk/openai'
 import { generateText } from 'ai'
+import { tools } from './tools'
+import { executeTool } from './executeTools'
 import { SYSTEM_PROMPT } from './system/prompt'
 
 // This works for both Groq and Grok (xAI) as they are OpenAI-compatible.
@@ -19,15 +21,18 @@ export const runAgent = async (
     conversationHistory?: any,
     callbacks?: any
 ) => {
-    const { text } = await generateText({
+    // We can also destructure toolCalls along side the text after we start using tools
+    const { text, toolCalls } = await generateText({
         model: MODEL_NAME,
         prompt: userMessage,
-        system: SYSTEM_PROMPT
+        system: SYSTEM_PROMPT,
+        tools,
+        toolChoice: 'auto' // Default is auto
     })
 
-    console.log('Agent Response:', text)
+    console.log('Agent Response:', text, toolCalls)
     return text
 }
 
 // Example usage
-runAgent('Hello can you hear me?')
+runAgent('What is the current date and time?')
