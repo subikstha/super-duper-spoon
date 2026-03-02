@@ -1,9 +1,11 @@
 import 'dotenv/config'
 import { createOpenAI } from '@ai-sdk/openai'
-import { generateText } from 'ai'
-import { tools } from './tools'
-import { executeTool } from './executeTools'
-import { SYSTEM_PROMPT } from './system/prompt'
+import { generateText, type CoreMessage } from 'ai'
+import { tools } from './tools/index.js'
+// import { executeTool } from './executeTools.js'
+import { SYSTEM_PROMPT } from './system/prompt.js'
+import { getTracer, Laminar } from '@lmnr-ai/lmnr'
+import type { AgentCallbacks } from '../types.js'
 
 // This works for both Groq and Grok (xAI) as they are OpenAI-compatible.
 // If using Groq: baseURL: 'https://api.groq.com/openai/v1', apiKey: process.env.GROQ_API_KEY
@@ -16,26 +18,45 @@ const groq = createOpenAI({
 
 const MODEL_NAME = groq('llama-3.1-8b-instant')
 
+Laminar.initialize({
+    projectApiKey: process.env.LMNR_PROJECT_API_KEY
+})
+
 export const runAgent = async (
     userMessage: string,
-    conversationHistory?: any,
-    callbacks?: any
+    conversationHistory: CoreMessage[] = [],
+    callbacks?: AgentCallbacks
 ) => {
     // We can also destructure toolCalls along side the text after we start using tools
-    const { text, toolCalls } = await generateText({
+    const result = await generateText({
         model: MODEL_NAME,
         prompt: userMessage,
         system: SYSTEM_PROMPT,
         tools,
-        toolChoice: 'auto' // Default is auto
+        toolChoice: 'auto', // Default is auto
+        experimental_telemetry: { // This is used to visualize everything that our agent does
+            isEnabled: true,
+            tracer: getTracer()
+        }
     })
 
-    console.log('Agent Response:', text, toolCalls)
+    const newHistory: CoreMessage[] = [
+        ...conversationHistory,
+        { role: 'user', content: userMessage },
+        ...result.response.messages
+    ]
 
-    toolCalls.forEach(async (tc) => {
-        console.log(await executeTool(tc.toolName, tc.input))
-    })
-    return text
+    if (callbacks?.onToken && result.text) {
+        callbacks.onToken(result.text)
+    }
+
+    if (callbacks?.onComplete && result.text) {
+        callbacks.onComplete(result.text)
+    }
+
+    await Laminar.flush()
+    console.log('Done');
+    return newHistory
 }
 
 /*

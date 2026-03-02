@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Box, Text, useApp } from "ink";
 import type { ModelMessage } from "ai";
-import { runAgent } from "../agent/run.ts";
+import { runAgent } from "../agent/run.js";
 import { MessageList, type Message } from "./components/MessageList.tsx";
 import { ToolCall, type ToolCallProps } from "./components/ToolCall.tsx";
 import { Spinner } from "./components/Spinner.tsx";
@@ -43,11 +43,11 @@ export function App() {
       setActiveToolCalls([]);
 
       try {
-        const newHistory = await runAgent(userInput, conversationHistory, {
-          onToken: (token) => {
+        const updatedHistory = await runAgent(userInput, conversationHistory, {
+          onToken: (token: string) => {
             setStreamingText((prev) => prev + token);
           },
-          onToolCallStart: (name, args) => {
+          onToolCallStart: (name: string, args: any) => {
             setActiveToolCalls((prev) => [
               ...prev,
               {
@@ -58,7 +58,7 @@ export function App() {
               },
             ]);
           },
-          onToolCallEnd: (name, result) => {
+          onToolCallEnd: (name: string, result: string) => {
             setActiveToolCalls((prev) =>
               prev.map((tc) =>
                 tc.name === name && tc.status === "pending"
@@ -67,7 +67,7 @@ export function App() {
               ),
             );
           },
-          onComplete: (response) => {
+          onComplete: (response: string) => {
             if (response) {
               setMessages((prev) => [
                 ...prev,
@@ -77,17 +77,19 @@ export function App() {
             setStreamingText("");
             setActiveToolCalls([]);
           },
-          onToolApproval: (name, args) => {
+          onToolApproval: (name: string, args: any) => {
             return new Promise<boolean>((resolve) => {
               setPendingApproval({ toolName: name, args, resolve });
             });
           },
-          onTokenUsage: (usage) => {
+          onTokenUsage: (usage: TokenUsageInfo) => {
             setTokenUsage(usage);
           },
         });
 
-        setConversationHistory(newHistory);
+        if (updatedHistory) {
+          setConversationHistory(updatedHistory as any);
+        }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
