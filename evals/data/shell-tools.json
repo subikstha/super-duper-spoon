@@ -2,10 +2,14 @@
   {
     "data": {
       "prompt": "Run npm install to install the dependencies",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "golden"
     },
     "metadata": {
@@ -15,10 +19,14 @@
   {
     "data": {
       "prompt": "Execute the test suite with npm test",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "golden"
     },
     "metadata": {
@@ -28,10 +36,14 @@
   {
     "data": {
       "prompt": "Check the git status of this repository",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "golden"
     },
     "metadata": {
@@ -41,10 +53,14 @@
   {
     "data": {
       "prompt": "Build the project using the build script",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "golden"
     },
     "metadata": {
@@ -54,10 +70,14 @@
   {
     "data": {
       "prompt": "Can you start the development server?",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "secondary"
     },
     "metadata": {
@@ -67,10 +87,14 @@
   {
     "data": {
       "prompt": "Help me set up the project",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "expectedTools": ["runCommand"],
+      "expectedTools": [
+        "runCommand"
+      ],
       "category": "secondary"
     },
     "metadata": {
@@ -80,10 +104,14 @@
   {
     "data": {
       "prompt": "What is TypeScript used for?",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "forbiddenTools": ["runCommand"],
+      "forbiddenTools": [
+        "runCommand"
+      ],
       "category": "negative"
     },
     "metadata": {
@@ -93,10 +121,14 @@
   {
     "data": {
       "prompt": "Explain how async/await works in JavaScript",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "forbiddenTools": ["runCommand"],
+      "forbiddenTools": [
+        "runCommand"
+      ],
       "category": "negative"
     },
     "metadata": {
@@ -106,10 +138,14 @@
   {
     "data": {
       "prompt": "What's the difference between let and const?",
-      "tools": ["runCommand"]
+      "tools": [
+        "runCommand"
+      ]
     },
     "target": {
-      "forbiddenTools": ["runCommand"],
+      "forbiddenTools": [
+        "runCommand"
+      ],
       "category": "negative"
     },
     "metadata": {

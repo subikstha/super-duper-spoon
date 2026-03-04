@@ -1,7 +1,7 @@
 import 'dotenv/config'
-import { createOpenAI } from '@ai-sdk/openai'
 import { generateText, type CoreMessage } from 'ai'
 import { tools } from './tools/index.js'
+import { MODEL_NAME } from '../groq.js'
 // import { executeTool } from './executeTools.js'
 import { SYSTEM_PROMPT } from './system/prompt.js'
 import { getTracer, Laminar } from '@lmnr-ai/lmnr'
@@ -11,12 +11,7 @@ import type { AgentCallbacks } from '../types.js'
 // If using Groq: baseURL: 'https://api.groq.com/openai/v1', apiKey: process.env.GROQ_API_KEY
 // If using Grok (xAI): baseURL: 'https://api.x.ai/v1', apiKey: process.env.XAI_API_KEY
 
-const groq = createOpenAI({
-    baseURL: 'https://api.groq.com/openai/v1',
-    apiKey: process.env.GROQ_API_KEY,
-})
 
-const MODEL_NAME = groq('llama-3.1-8b-instant')
 
 Laminar.initialize({
     projectApiKey: process.env.LMNR_PROJECT_API_KEY
@@ -31,6 +26,9 @@ export const runAgent = async (
     const result = await generateText({
         model: MODEL_NAME,
         prompt: userMessage,
+        // messages: [], We can pass an array called messages which includes the past conversations if not passing a single prompt
+        // It is an array of objects where each object is of type {role: 'user', content: 'actual message'}
+        // If the last message in the messages array contains an object with role: 'user', then the LLM will respond to that 
         system: SYSTEM_PROMPT,
         tools,
         toolChoice: 'auto', // Default is auto
