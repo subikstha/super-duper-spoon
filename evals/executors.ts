@@ -1,5 +1,5 @@
 
-import { generateText, stepCountIs, tool, type ToolSet } from 'ai'
+import { generateText, stepCountIs, tool, type ModelMessage, type ToolSet } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { z } from 'zod'
 import type {
@@ -8,8 +8,9 @@ import type {
   MultiTurnEvalData,
   MultiTurnResult,
 } from "./types.ts";
-import { buildMessages } from './utils.ts';
+import { buildMessages, buildMockedTools } from './utils.ts';
 import { MODEL_NAME } from '../src/groq.ts';
+import { SYSTEM_PROMPT } from '../dist/agent/system/prompt';
 
 const TOOL_DEFINITIONS: any = {
   readFile: {
@@ -67,7 +68,12 @@ export const singleTurnExecutorWithMocks = async (data: EvalData) => {
     messages,
     tools,
     stopWhen: stepCountIs(1),
-    temperature: data.config?.temperature ?? undefined
+    temperature: data.config?.temperature ?? undefined,
+    providerOptions: {
+      openai: {
+        reasoningEffort: 'high'
+      }
+    }
   })
 
   const calls = toolCalls.map((tc) => ({
@@ -82,4 +88,44 @@ export const singleTurnExecutorWithMocks = async (data: EvalData) => {
     toolNames,
     selectedAny: toolNames.length > 0
   }
+}
+
+export const multiTurnWithMocks = async (data: MultiTurnEvalData) => {
+  const tools = buildMockedTools(data.mockTools)
+
+  const messages: ModelMessage[] = data.messages ?? [
+    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'user', content: data.prompt! }
+  ]
+
+  const result = await generateText({
+    model: MODEL_NAME,
+    messages,
+    tools,
+    stopWhen: stepCountIs(data.config?.maxSteps ?? 20)
+  })
+
+  // const allTools
+
+  const allTools: string[] = [];
+  const steps = result.steps.map(step => {
+    const stepToolCalls = (step.toolCalls ?? []).map(tc => {
+      allTools.push(tc.toolName)
+      return {
+        toolName: tc.toolName,
+        args: 'args' in tc ? tc.args : {}
+      }
+    })
+
+    const stepToolResults = (step.staticToolResults ?? []).map(tr => ({
+      toolName: tr.toolName,
+      result: "results" in tr ? tr.results : tr
+    }))
+
+    return {
+      toolCalls: stepToolCalls.length > 0 ? stepToolCalls : undefined,
+      toolResults: stepToolResults.length > 0 ? stepToolResults : undefined,
+      text: step.text || undefined
+    }
+  })
 }
