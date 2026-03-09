@@ -26,11 +26,11 @@ export const llmJudge = async (output: MultiTurnResult, target: MultiTurnTarget)
     model: JUDGE_MODEL_NAME,
     schema: judgeSchema,
     schemaName: 'evaluation',
-    providerOptions: {
-      openai: {
-        reasoningEffort: "high"
-      }
-    },
+    // providerOptions: {
+    //   groq: {
+    //     reasoningEffort: "high"
+    //   }
+    // },
     schemaDescription: "Evaluation of an AI agnet response",
     messages: [
       {

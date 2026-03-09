@@ -107,10 +107,10 @@ export const multiTurnWithMocks = async (data: MultiTurnEvalData) => {
 
   // const allTools
 
-  const allTools: string[] = [];
+  const allToolCalls: string[] = [];
   const steps = result.steps.map(step => {
     const stepToolCalls = (step.toolCalls ?? []).map(tc => {
-      allTools.push(tc.toolName)
+      allToolCalls.push(tc.toolName)
       return {
         toolName: tc.toolName,
         args: 'args' in tc ? tc.args : {}
@@ -128,4 +128,13 @@ export const multiTurnWithMocks = async (data: MultiTurnEvalData) => {
       text: step.text || undefined
     }
   })
+
+  const toolsUsed = [new Set(allToolCalls)]
+
+  return {
+    text: result.text,
+    steps,
+    toolsUsed,
+    toolCallOrder: allToolCalls
+  }
 }

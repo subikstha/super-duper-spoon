@@ -6,4 +6,4 @@ export const groq = createOpenAI({
 })
 
 export const MODEL_NAME = groq('llama-3.1-8b-instant')
-export const JUDGE_MODEL_NAME = groq('llama-3.1-70b-versatile')
+export const JUDGE_MODEL_NAME = groq('qwen/qwen3-32b')
