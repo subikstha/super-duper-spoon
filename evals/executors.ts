@@ -9,7 +9,7 @@ import type {
   MultiTurnResult,
 } from "./types.ts";
 import { buildMessages } from './utils.ts';
-import { MODEL_NAME } from '../src/groq.ts';
+import { MODEL_NAME } from '../src/ollama.ts';
 
 const TOOL_DEFINITIONS: any = {
   readFile: {

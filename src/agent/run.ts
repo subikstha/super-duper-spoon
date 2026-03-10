@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { streamText, type ModelMessage } from 'ai'
 import { tools } from './tools/index.js'
-import { MODEL_NAME } from '../groq.js'
+import { MODEL_NAME } from '../ollama.js'
 import { executeTool } from './executeTools.js'
 import { SYSTEM_PROMPT } from './system/prompt.js'
 import { getTracer, Laminar } from '@lmnr-ai/lmnr'
