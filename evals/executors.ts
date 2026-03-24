@@ -9,7 +9,7 @@ import type {
   MultiTurnResult,
 } from "./types.ts";
 import { buildMessages, buildMockedTools } from './utils.ts';
-import { MODEL_NAME } from '../src/groq.ts';
+import { MODEL_NAME } from '../src/olama.ts';
 import { SYSTEM_PROMPT } from '../dist/agent/system/prompt';
 
 const TOOL_DEFINITIONS: any = {
@@ -39,7 +39,11 @@ const TOOL_DEFINITIONS: any = {
     })
   },
   runCommand: {
-    description: 'Execute a shell command and return its output',
+    description: `Execute a shell command and return its output. Run terminal commands such as:
+  - npm install
+  - npm test
+  - npm run build
+  - git status`,
     parameters: z.object({
       command: z.string().describe('the shell command to execute')
     })
@@ -69,11 +73,11 @@ export const singleTurnExecutorWithMocks = async (data: EvalData) => {
     tools,
     stopWhen: stepCountIs(1),
     temperature: data.config?.temperature ?? undefined,
-    providerOptions: {
-      openai: {
-        reasoningEffort: 'high'
-      }
-    }
+    // providerOptions: {
+    //   openai: {
+    //     reasoningEffort: 'high'
+    //   }
+    // }
   })
 
   const calls = toolCalls.map((tc) => ({

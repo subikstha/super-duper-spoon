@@ -8,19 +8,19 @@ import type {
   MultiTurnTarget,
   MultiTurnResult,
 } from "./types.ts";
-import { JUDGE_MODEL_NAME } from "../src/groq.ts";
+import { JUDGE_MODEL_NAME } from "../src/olama.ts";
 
+// Created a schema for structured output and not free form evaluation
 const judgeSchema = z.object({
   score: z.number().min(1).max(10).describe("Score from 1-10 where 10 is perfect"),
   reason: z.string().describe('Brief explanation for the score')
 })
 
 /**
- * Evaluator: Precision/recall score for tool selection.
- * Returns a score between 0 and 1 based on correct selections.
- * For secondary prompts.
+ * Evaluator: LLM-as-judge for output quality.
+ * Uses structured output to reliably assess if the agent's response is correct.
+ * Returns a score from 0-1 (internally uses 1-10 scale divided by 10).
  */
-
 export const llmJudge = async (output: MultiTurnResult, target: MultiTurnTarget) => {
   const result = await generateObject({
     model: JUDGE_MODEL_NAME,
@@ -55,9 +55,33 @@ export const llmJudge = async (output: MultiTurnResult, target: MultiTurnTarget)
     ]
   })
 
+  // Convert 1-10 score to 0-1 range
   return result.object.score / 10;
 }
 
+/*
+Type SingleTurnResult
+interface SingleTurnResult {
+toolCalls: Array<{ toolName: string; args: unknown }>;
+  /** Just the tool names for easy comparison 
+  toolNames: string[];
+  /** Whether any tool was selected 
+  selectedAny: boolean;
+}
+
+Type EvalTarget
+interface EvalTarget {
+  expectedTools: string[];
+  forbiddenTools: string[];
+  category: 'golden' | 'negative' | 'secondary'
+}
+*/
+
+/**
+ * Evaluator: Precision/recall score for tool selection.
+ * Returns a score between 0 and 1 based on correct selections.
+ * For secondary prompts.
+ */
 export function toolSelectionScore(
   output: SingleTurnResult,
   target: EvalTarget,

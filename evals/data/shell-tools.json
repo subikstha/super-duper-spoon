@@ -69,6 +69,24 @@
   },
   {
     "data": {
+      "prompt": "Can you not run the development server?",
+      "tools": [
+        "runCommand",
+        "deveopmentCommand"
+      ]
+    },
+    "target": {
+      "forbiddenTools": [
+        "runCommand",
+        "developmentCommand"
+      ]
+    },
+    "metadata": {
+      "description": "Request to not run the development server"
+    }
+  },
+  {
+    "data": {
       "prompt": "Can you start the development server?",
       "tools": [
         "runCommand"
