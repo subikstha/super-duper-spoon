@@ -56,9 +56,26 @@ export const webSearch = tool({
       ];
     } else {
       // call general web search API (Tavily / SerpAPI)
-      const res = await fetch(
-        `https://api.tavily.com/search?q=${encodeURIComponent(query)}`,
-      );
+      const tavilyApiKey = process.env.TAVILY_API_KEY;
+      if (!tavilyApiKey) {
+        return [
+          {
+            title: "Web search unavailable",
+            snippet: "TAVILY_API_KEY is missing from environment variables.",
+          },
+        ];
+      }
+
+      const res = await fetch("https://api.tavily.com/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          api_key: tavilyApiKey,
+          query,
+        }),
+      });
       const raw = await res.json();
       const parsed = tavilyResponseSchema.safeParse(raw);
 

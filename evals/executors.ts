@@ -14,7 +14,7 @@ import type {
   MultiTurnResult,
 } from "./types.ts";
 import { buildMessages, buildMockedTools } from "./utils.ts";
-import { MODEL_NAME } from "../src/openai.ts";
+import { MODEL_NAME } from "../src/olama.ts";
 import { SYSTEM_PROMPT } from "../dist/agent/system/prompt";
 
 const TOOL_DEFINITIONS: any = {
@@ -93,11 +93,11 @@ export const singleTurnExecutorWithMocks = async (data: EvalData) => {
     tools,
     stopWhen: stepCountIs(1),
     temperature: data.config?.temperature ?? undefined,
-    providerOptions: {
-      openai: {
-        reasoningEffort: 'high'
-      }
-    }
+    // providerOptions: {
+    //   openai: {
+    //     reasoningEffort: 'high'
+    //   }
+    // }
   });
 
   const calls = toolCalls.map((tc) => ({

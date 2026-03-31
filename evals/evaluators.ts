@@ -8,7 +8,7 @@ import type {
   MultiTurnTarget,
   MultiTurnResult,
 } from "./types.ts";
-import { JUDGE_MODEL_NAME } from "../src/openai.ts";
+import { JUDGE_MODEL_NAME } from "../src/olama.ts";
 
 // Created a schema for structured output and not free form evaluation
 const judgeSchema = z.object({
@@ -26,11 +26,11 @@ export const llmJudge = async (output: MultiTurnResult, target: MultiTurnTarget)
     model: JUDGE_MODEL_NAME,
     schema: judgeSchema,
     schemaName: 'evaluation',
-    providerOptions: {
-      groq: {
-        reasoningEffort: "high"
-      }
-    },
+    // providerOptions: {
+    //   groq: {
+    //     reasoningEffort: "high"
+    //   }
+    // },
     schemaDescription: "Evaluation of an AI agnet response",
     messages: [
       {

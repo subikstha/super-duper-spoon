@@ -6,5 +6,5 @@ export const ollama = createOpenAI({
 });
 
 export const JUDGE_MODEL_NAME = ollama.chat("llama3.2:3b");
-export const MODEL_NAME = ollama.chat("qwen2.5:1.5b");
+export const MODEL_NAME = ollama.chat("llama3.2:3b");
 // export const MODEL_NAME = ollama.chat('phi3:latest')
