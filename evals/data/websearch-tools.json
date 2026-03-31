@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "prompt": "What is the current USD exchange rate?",
+      "tools": ["readFile", "webSearch", "writeFile"]
+    },
+    "target": {
+      "expectedTools": ["webSearch"],
+      "category": "golden"
+    },
+    "metadata": {
+      "description": "Requires web search to find the current USD exchange rates"
+    }
+  },
+  {
+    "data": {
+      "prompt": "Who is the current Prime Minister of Nepal?",
+      "tools": ["readFile", "webSearch", "writeFile"]
+    },
+    "target": {
+      "expectedTools": ["webSearch"],
+      "category": "golden"
+    },
+    "metadata": {
+      "description": "Requires web search to find the current Prime Minister of Nepal"
+    }
+  }
+]

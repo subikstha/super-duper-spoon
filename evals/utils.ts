@@ -41,3 +41,16 @@ export const buildMessages = (
     { role: "user", content: data.prompt! },
   ];
 };
+
+// Utility to extract currencies
+export function extractCurrencies(query: string) {
+  const regex = /\b([A-Z]{3})\b/g;
+  const matches = query.match(regex);
+
+  if (!matches || matches.length === 0) return { from: "USD", to: "USD" }; // This is the default
+
+  return {
+    from: matches[0], // first currency
+    to: matches[1], // second currency
+  };
+}
